@@ -12,18 +12,19 @@ pipeline {
     stages {
         stage('Checkout from GitHub') {
             steps {
-                // Checkout the code from GitHub
-               // git url : "https://github.com/sekhar-dev/first-demo-project.git" , branch : "master"
-                 sh 'git clone https://github.com/sekhar-dev/first-demo-project.git'
-            
-            // Change directory to the newly cloned repository
-            dir('first-demo-project') {
-                // Checkout the 'master' branch (you can replace 'master' with any branch name)
-                sh 'git checkout master'
-            }
-
-
-                
+                script {
+                    // Check if the directory already exists
+                    if (!fileExists('first-demo-project')) {
+                        // If it doesn't exist, clone the repository
+                        sh 'git clone https://github.com/sekhar-dev/first-demo-project.git'
+                    } else {
+                        // If it exists, reset the repository to make sure it's up-to-date
+                        dir('first-demo-project') {
+                            sh 'git reset --hard'
+                            sh 'git pull origin master'
+                        }
+                    }
+                }
             }
         }
 
