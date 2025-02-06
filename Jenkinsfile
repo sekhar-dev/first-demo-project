@@ -57,7 +57,7 @@ pipeline {
                     // Optionally run the container to check that the app works
                     // You can comment this out if not needed
                     sh '''
-                    docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+                    docker run -d -p 8888:8080 ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
                     '''
                 }
             }
