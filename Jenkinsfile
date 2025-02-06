@@ -1,45 +1,65 @@
 pipeline {
     agent any
 
-    tools {
-        // Ensure Maven is available as configured in Jenkins' Global Tool Configuration
-        maven 'Maven 3.x' // Name of the Maven installation from Step 3
-    }
-
     environment {
-        // Optional: If you have any environment variables you need
-        // Example: MAVEN_HOME = '/opt/apache-maven-3.9.9'
+        DOCKER_IMAGE_NAME = 'my-app'  // Define a name for the Docker image
+        DOCKER_TAG = 'latest'         // Define the tag for the Docker image
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout from GitHub') {
             steps {
-                // Checkout your code from Git
+                // Checkout the code from GitHub
                 git 'https://github.com/sekhar-dev/first-demo-project.git' branch: 'master'
             }
         }
 
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
-                // Run Maven build command (you can change this if you have specific goals)
-                sh 'mvn clean install'
+                script {
+                    // Run Maven to clean and build the project (creates .jar file in target/)
+                    sh 'mvn clean install'
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
-                // Optional: Deploy the built artifacts to a repository (e.g., Nexus or Artifactory)
-                sh 'mvn deploy'
+                script {
+                    // Build the Docker image using the Dockerfile
+                    // The built .jar will be in the target/ directory
+                    sh '''
+                    docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .
+                    '''
+                }
+            }
+        }
+
+        stage('Run Docker Container (Optional)') {
+            steps {
+                script {
+                    // Optionally run the container to check that the app works
+                    // You can comment this out if not needed
+                    sh '''
+                    docker run -d -p 8080:8080 ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+                    '''
+                }
             }
         }
     }
 
     post {
+        always {
+            // Clean up Docker images and containers to save space
+            sh 'docker system prune -af || true'
+        }
         success {
-            echo 'Build completed successfully!'
+            // Success actions (can be extended as needed)
+            echo "Build and Docker image creation successful!"
         }
         failure {
-            echo 'Build failed. Check the logs for details.'
+            // Failure actions (can be extended as needed)
+            echo "Build or Docker image creation failed."
         }
     }
 }
