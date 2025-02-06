@@ -5,7 +5,10 @@ pipeline {
         DOCKER_IMAGE_NAME = 'my-app'  // Define a name for the Docker image
         DOCKER_TAG = 'latest'         // Define the tag for the Docker image
     }
-
+  // environment {
+  //       MAVEN_HOME = '/opt/apache-maven-3.9.9' // Path to your Maven installation
+  //       PATH = "${MAVEN_HOME}/bin:${env.PATH}" // Add Maven to the PATH
+  //   }
     stages {
         stage('Checkout from GitHub') {
             steps {
