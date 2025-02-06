@@ -10,7 +10,17 @@ pipeline {
         stage('Checkout from GitHub') {
             steps {
                 // Checkout the code from GitHub
-                git url : "https://github.com/sekhar-dev/first-demo-project.git" , branch : "master"
+               // git url : "https://github.com/sekhar-dev/first-demo-project.git" , branch : "master"
+                 sh 'git clone https://github.com/sekhar-dev/first-demo-project.git'
+            
+            // Change directory to the newly cloned repository
+            dir('first-demo-project') {
+                // Checkout the 'master' branch (you can replace 'master' with any branch name)
+                sh 'git checkout master'
+            }
+
+
+                
             }
         }
 
