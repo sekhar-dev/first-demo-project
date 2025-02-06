@@ -65,10 +65,10 @@ pipeline {
     }
 
     post {
-        always {
-            // Clean up Docker images and containers to save space
-            sh 'docker system prune -af || true'
-        }
+        // always {
+        //     // Clean up Docker images and containers to save space
+        //     sh 'docker system prune -af || true'
+        // }
         success {
             // Success actions (can be extended as needed)
             echo "Build and Docker image creation successful!"
